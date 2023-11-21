@@ -47,8 +47,8 @@
       ondrop="drop(event)"
       ondragover="allowDrop(event)"
     >
-      <div style="background-image: url('https://placehold.co/200x200?text=1');" class="draggable myArea" draggable="true" ondragstart="drag(event)">
-        <input type="checkbox">
+      <div class="draggable myArea" draggable="true" ondragstart="drag(event)">
+        <img src="image1.jgp" alt="Image 1" />
       </div>
       <div class="draggable" draggable="true" ondragstart="drag(event)">
         <img src="image2.jpg" alt="Image 2" />
@@ -107,18 +107,6 @@
           container.replaceChild(targetParent, dragged);
           // Replace the temporary element with the dragged element
           container.replaceChild(dragged, temp);
-        }
-
-        // Remove the class myArea from all draggable elements
-        const divs = document.querySelectorAll(".draggable");
-        divs.forEach((div) => {
-          div.classList.remove("myArea");
-        });
-
-        // Check if the first child was part of the dragged elements
-        if (Array.from(container.children).indexOf(dragged) === 0) {
-          // Add the myArea class only if the first child was part of the dragged elements
-          container.firstElementChild.classList.add("myArea");
         }
       }
     </script>

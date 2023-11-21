@@ -52,20 +52,20 @@ function App() {
   }
 
   function drag(event) {
-    dragged = event.currentTarget;
+    dragged = event.target;
   }
-  
+
   function drop(event) {
     event.preventDefault();
-  
+
     const container = document.getElementById("container");
     const target = event.target;
-    let targetParent = target.classList.contains("image-container")
+    let targetParent = target.classList.contains("draggable")
       ? target
       : target.parentElement;
-  
-    if (targetParent.classList.contains("image-container")) {
-      const temp = document.createElement("div");
+
+    if (targetParent.classList.contains("draggable")) {
+      const temp = document.createElement("img");
       // Replace the target element with a temporary element
       container.replaceChild(temp, targetParent);
       // Replace the dragged element with the target element
@@ -74,7 +74,7 @@ function App() {
       container.replaceChild(dragged, temp);
     }
     // Remove the class myArray if it is present in any of the images
-    const images = document.querySelectorAll(".image-container");
+    const images = document.querySelectorAll(".draggable");
     images.forEach((image) => {
       image.classList.remove("myArea");
     });
@@ -94,22 +94,18 @@ function App() {
         onDragOver={(event) => allowDrop(event)}
         ref={ref}
       >
-      
-      {images.map((image) => (
-        <div 
-          key={image.id} 
-          className="image-container draggable hoverEffect" 
-          draggable="true" 
-          onDragStart={(event) => drag(event)}
-        >
+        {images.map((image) => (
           <img
+            key={image.id}
+            className="draggable"
+            draggable="true"
+            onDragStart={(event) => drag(event)}
             src={image.url}
             alt={`Image ${image.id}`}
             onClick={() => setSelectedImage(image)}
           />
-          <input type="checkbox" />
-        </div>
-      ))}
+        ))}
+        
       </div>
     </div>
   );

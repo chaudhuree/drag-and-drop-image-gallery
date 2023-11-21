@@ -1,0 +1,82 @@
+import React, { useRef, useState, useEffect } from "react";
+import "./App.css";
+
+function App() {
+  const [dragged, setDragged] = useState(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    // Add 'myArea' class to the first child on mount
+    if (containerRef.current) {
+      containerRef.current.firstElementChild.classList.add("myArea");
+    }
+  }, []);
+
+  function allowDrop(event) {
+    event.preventDefault();
+  }
+
+  function drag(event) {
+    setDragged(event.target);
+  }
+
+  function drop(event) {
+    event.preventDefault();
+
+    const container = containerRef.current;
+    const target = event.target;
+    let targetParent = target.classList.contains("draggable")
+      ? target
+      : target.parentElement;
+
+    if (targetParent.classList.contains("draggable")) {
+      // Create a shallow copy of the children array
+      const children = Array.from(container.children);
+
+      // Find indices of dragged and target elements
+      const indexDragged = children.indexOf(dragged);
+      const indexTarget = children.indexOf(targetParent);
+
+      // Swap elements in the array
+      [children[indexDragged], children[indexTarget]] = [
+        children[indexTarget],
+        children[indexDragged],
+      ];
+
+      // Update the state to trigger re-render
+      setDragged(null);
+      // Add 'myArea' class to the first child
+      children[0].classList.add("myArea");
+    }
+  }
+
+  return (
+    <div className="gallery-container">
+      <div
+        ref={containerRef}
+        className="container"
+        id="container"
+        onDrop={(event) => drop(event)}
+        onDragOver={(event) => allowDrop(event)}
+      >
+        {/* Render draggable elements */}
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+          <div
+            key={index}
+            style={{
+              backgroundImage: `url('https://placehold.co/200x200?text=${index}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+            className="draggable"
+            draggable="true"
+            onDragStart={(event) => drag(event)}
+          ></div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
