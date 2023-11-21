@@ -84,6 +84,7 @@ function App() {
     });
     container.firstElementChild.classList.add("myArea");
   }
+ 
   React.useEffect(() => {
     ref.current.firstElementChild.classList.add("myArea");
   }, []);
