@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
       url: "https://placehold.co/200x200?text=11",
     },
   ]);
-  let [selectedImage, setSelectedImage] = React.useState([]);
+  let [selectedImage, setSelectedImage] = useState([]);
   const ref = useRef(null);
   let dragged;
   function allowDrop(event) {
@@ -80,37 +80,42 @@ function App() {
     // Remove the class myArray if it is present in any of the images
     const images = document.querySelectorAll(".image-container");
     images.forEach((image) => {
-      image.classList.remove("myArea");
+      image.classList.remove("featuredItem");
     });
-    container.firstElementChild.classList.add("myArea");
+    container.firstElementChild.classList.add("featuredItem");
   }
- 
-  React.useEffect(() => {
-    ref.current.firstElementChild.classList.add("myArea");
+
+  useEffect(() => {
+    ref.current.firstElementChild.classList.add("featuredItem");
   }, []);
-  React.useEffect(() => {
-    ref.current.firstElementChild.classList.add("myArea");
+  useEffect(() => {
+    ref.current.firstElementChild.classList.add("featuredItem");
   }, [images]);
   console.log("selectedImage", selectedImage);
-const handleDelete = () => {
-  setImages((prev) => prev.filter((image) => !selectedImage.includes(image.id)))
-  setSelectedImage([])
-}
+  const handleDelete = () => {
+    setImages((prev) =>
+      prev.filter((image) => !selectedImage.includes(image.id))
+    );
+    setSelectedImage([]);
+  };
   return (
     <main className="gallery-container">
       {/*
       heading
     */}
       <div className="header">
-      
-      <h3>
-      {selectedImage.length === 0
-        ? "Gallery"
-        : selectedImage.length > 1
-        ? `${selectedImage.length} images are selected`
-        : `${selectedImage.length} image is selected`}
-    </h3>
-       {selectedImage.length > 0 && <button className="delete-button" onClick={handleDelete}>{selectedImage.length > 1? "Delete files":"Delete File"}</button>}
+        <h3>
+          {selectedImage.length === 0
+            ? "Gallery"
+            : selectedImage.length > 1
+            ? `${selectedImage.length} images are selected`
+            : `${selectedImage.length} image is selected`}
+        </h3>
+        {selectedImage.length > 0 && (
+          <button className="delete-button" onClick={handleDelete}>
+            {selectedImage.length > 1 ? "Delete files" : "Delete File"}
+          </button>
+        )}
       </div>
       <div className="line"></div>
       {/*
