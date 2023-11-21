@@ -1,4 +1,4 @@
-import React ,{useRef} from "react";
+import React, { useRef } from "react";
 import "./App.css";
 
 function App() {
@@ -43,16 +43,20 @@ function App() {
       id: 10,
       url: "https://placehold.co/200x200?text=10",
     },
+    {
+      id: 11,
+      url: "https://placehold.co/200x200?text=11",
+    },
   ]);
   let [selectedImage, setSelectedImage] = React.useState([]);
-  const ref=useRef(null);
+  const ref = useRef(null);
   let dragged;
   function allowDrop(event) {
     event.preventDefault();
   }
 
   function drag(event) {
-    dragged = event.target;
+    dragged = event.currentTarget;
   }
 
   function drop(event) {
@@ -60,12 +64,12 @@ function App() {
 
     const container = document.getElementById("container");
     const target = event.target;
-    let targetParent = target.classList.contains("draggable")
+    let targetParent = target.classList.contains("image-container")
       ? target
       : target.parentElement;
 
-    if (targetParent.classList.contains("draggable")) {
-      const temp = document.createElement("img");
+    if (targetParent.classList.contains("image-container")) {
+      const temp = document.createElement("div");
       // Replace the target element with a temporary element
       container.replaceChild(temp, targetParent);
       // Replace the dragged element with the target element
@@ -74,7 +78,7 @@ function App() {
       container.replaceChild(dragged, temp);
     }
     // Remove the class myArray if it is present in any of the images
-    const images = document.querySelectorAll(".draggable");
+    const images = document.querySelectorAll(".image-container");
     images.forEach((image) => {
       image.classList.remove("myArea");
     });
@@ -83,10 +87,34 @@ function App() {
   React.useEffect(() => {
     ref.current.firstElementChild.classList.add("myArea");
   }, []);
-  console.log('selectedImage',selectedImage);
-  
+  React.useEffect(() => {
+    ref.current.firstElementChild.classList.add("myArea");
+  }, [images]);
+  console.log("selectedImage", selectedImage);
+const handleDelete = () => {
+  setImages((prev) => prev.filter((image) => !selectedImage.includes(image.id)))
+  setSelectedImage([])
+}
   return (
-    <div className="gallery-container">
+    <main className="gallery-container">
+      {/*
+      heading
+    */}
+      <div className="header">
+      
+      <h3>
+      {selectedImage.length === 0
+        ? "Gallery"
+        : selectedImage.length > 1
+        ? `${selectedImage.length} images are selected`
+        : `${selectedImage.length} image is selected`}
+    </h3>
+       {selectedImage.length > 0 && <button className="delete-button" onClick={handleDelete}>{selectedImage.length > 1? "Delete files":"Delete File"}</button>}
+      </div>
+      <div className="line"></div>
+      {/*
+      gallery-container
+    */}
       <div
         className="container"
         id="container"
@@ -95,87 +123,39 @@ function App() {
         ref={ref}
       >
         {images.map((image) => (
-          <img
+          <div
             key={image.id}
-            className="draggable"
+            className="image-container draggable hoverEffect"
             draggable="true"
             onDragStart={(event) => drag(event)}
-            src={image.url}
-            alt={`Image ${image.id}`}
-            onClick={() => setSelectedImage(image)}
-          />
+          >
+            <img
+              src={image.url}
+              alt={`Image ${image.id}`}
+              className={
+                selectedImage.includes(image.id) ? "selectedFilter" : {}
+              }
+            />
+            <input
+              type="checkbox"
+              className={`image-checkbox ${
+                selectedImage.includes(image.id) ? "visible" : ""
+              }`}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedImage([...selectedImage, image.id]);
+                } else {
+                  setSelectedImage(
+                    selectedImage.filter((id) => id !== image.id)
+                  );
+                }
+              }}
+            />
+          </div>
         ))}
-        
       </div>
-    </div>
+    </main>
   );
 }
 
 export default App;
-
-
-/*
-<img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=2"
-          alt="Image 2"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=3"
-          alt="Image 3"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=4"
-          alt="Image 4"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=5"
-          alt="Image 5"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=6"
-          alt="Image 6"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=7"
-          alt="Image 7"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=8"
-          alt="Image 8"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=9"
-          alt="Image 9"
-        />
-        <img
-          className="draggable"
-          draggable="true"
-          onDragStart={(event) => drag(event)}
-          src="https://placehold.co/200x200?text=10"
-          alt="Image 10"
-        />
-*/
